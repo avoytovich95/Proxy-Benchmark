@@ -1,13 +1,26 @@
 import java.io.File
 import java.net.*
 import java.util.*
+import kotlin.concurrent.thread
+import javax.swing.JFrame
+import javax.swing.text.StyleConstants.setIcon
+import javax.swing.JLabel
+import java.awt.FlowLayout
+import javax.swing.ImageIcon
+import javax.imageio.ImageIO
+import java.awt.image.BufferedImage
+import java.io.IOException
+
+
 
 private var arg0 = ""
 private var arg1 = ""
 private var arg2 = ""
 
-private var type = ""
 private val location = System.getProperty("user.dir") + File.separator
+private var type = ""
+private var file = ""
+
 private var imgIndex = 0
 
 /**
@@ -45,7 +58,7 @@ fun main(args: Array<String>) {
         receiveSlide(url)
     else if (arg1 == "stop")
         connectStop(url)
-
+    displayImage()
 }
 
 private fun connectStop(url: String) {
@@ -78,6 +91,7 @@ private fun connectStop(url: String) {
                 if (Data.getOp(inBytes) == 3.toByte()) {
                     frag = Data.getDataFrag(inBytes)
                     if (arg2 == "drop" && chance()) {
+                        Thread.sleep(500)
                         throw SocketTimeoutException("Packet Dropped")
                     }else {
                         print("Received ${frag.aBlock}:${frag.bBlock}... ")
@@ -114,6 +128,7 @@ private fun connectStop(url: String) {
     println("Saving file")
     img.save(location, imgIndex++)
     println("File saved")
+    file = img.file
 }
 
 private fun receiveSlide(url: String) {    val socket = DatagramSocket()
@@ -151,9 +166,10 @@ private fun receiveSlide(url: String) {    val socket = DatagramSocket()
 
                         if (Data.getOp(inBytes) == 5.toByte()) throw Exception("Error Code: ")
 
-                        if (arg2 == "drop" && chance()) {
-                            throw SocketTimeoutException("Packet Dropped")
-                        } else if (Data.checkBlock(frag.aBlock, frag.bBlock, expected)) {
+//                        if (arg2 == "drop" && chance()) {
+//                            throw SocketTimeoutException("Packet Dropped")
+//                        } else
+                        if (Data.checkBlock(frag.aBlock, frag.bBlock, expected)) {
                             println("Received ${frag.aBlock}:${frag.bBlock}")
                             img.add(frag)
                             latest = byteArrayOf(frag.aBlock, frag.bBlock)
@@ -189,6 +205,7 @@ private fun receiveSlide(url: String) {    val socket = DatagramSocket()
     println("Saving file")
     img.save(location, imgIndex++)
     println("File saved")
+    file = img.file
 }
 
 private fun chance(): Boolean =
@@ -196,3 +213,19 @@ private fun chance(): Boolean =
 
 private fun ClosedRange<Int>.random() =
         Random().nextInt(endInclusive - start) +  start
+
+fun displayImage() {
+    val img = ImageIO.read(File(file))
+    val icon = ImageIcon(img)
+    val frame = JFrame()
+    val lbl = JLabel()
+    lbl.icon = icon
+    frame.run {
+        layout = FlowLayout()
+        setSize(img.width, img.height)
+        add(lbl)
+        isVisible = true
+        toFront()
+        defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+    }
+}

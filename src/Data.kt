@@ -10,7 +10,7 @@ object Data {
     const val address4 = "129.3.20.26" //pi cs server
     const val address6 = "fe80::225:90ff:fe4d:f030"
 
-    const val window = 10
+    const val window = 5
 
     private val errors = arrayOf("Bad link provided")
 
@@ -58,9 +58,9 @@ object Data {
     }
     fun getData(tftp: ByteArray): ByteArray {
         val bytes = ByteArray(512)
-        for (i in 4 until tftp.size) {
+        for (i in 4 until tftp.size)
             bytes[i-4] = tftp[i]
-        }
+
         return bytes
     }
 
@@ -69,7 +69,7 @@ object Data {
         val bytes = ByteArray(tftp.size); bytes.fill(32)
         for (i in 4 until tftp.size)
             if (tftp[i] != 0.toByte()) bytes[i-2] = tftp[i]
-        return "${tftp[2]}${tftp[3]}: ${String(bytes)}"
+        return "${tftp[2]}${tftp[3]}: ${String(bytes).trim()}"
     }
 
     fun getOp(tftp: ByteArray): Byte = tftp[1]

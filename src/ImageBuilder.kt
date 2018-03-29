@@ -12,6 +12,8 @@ class ImageBuilder(val type: String) {
     private val blocks = ArrayList<Block>()
     private lateinit var bytes: ByteArray
 
+    var file = ""
+
     fun add(img: ImageFrag) {
         list.add(img)
         blocks.add(Block(img.aBlock, img.bBlock))
@@ -30,7 +32,8 @@ class ImageBuilder(val type: String) {
     }
 
     fun save(location: String, index: Int) {
-        FileOutputStream(location + "savedImg$index.$type").use { fos ->
+        file = location + "savedImg$index.$type"
+        FileOutputStream(file).use { fos ->
             fos.write(bytes)
         }
     }

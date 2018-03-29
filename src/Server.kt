@@ -81,18 +81,21 @@ private fun connectStop() {
         }
         queue = splitImg(getImg()!!)
 
-        var count = 0
-
         outBytes = Data.DATA(indexA, indexB, queue.poll())
         while(true) {
-            soTimeout = 500
+            soTimeout = 1000
             try {
                 inBytes = ByteArray(128)
                 outPacket = DatagramPacket(outBytes, outBytes.size, client, clientPort!!)
                 inPacket = DatagramPacket(inBytes, inBytes.size)
-                print("${count++}: Sending $indexA:$indexB ")
 
-                send(outPacket)
+                if (arg2 == "drop" && chance())
+                    print("Dropping $indexA:$indexB")
+                else {
+                    print("Sending $indexA:$indexB ")
+                    send(outPacket)
+                }
+
                 receive(inPacket)
 
                 if (Data.checkBlock(indexA, indexB, Data.getBlock(inPacket.data))) {
@@ -163,7 +166,7 @@ private fun sendSlide() {
         var b: ByteArray
 
         while (true) {
-            soTimeout = 500
+            soTimeout = 1000
             try {
                 inBytes = ByteArray(128)
                 inPacket = DatagramPacket(inBytes, inBytes.size)
@@ -173,8 +176,13 @@ private fun sendSlide() {
                     if (i == list.size - 1)
                         outBytes[0] = 1
                     outPacket = DatagramPacket(outBytes, outBytes.size, client, clientPort!!)
-                    println("Sending $indexA:$indexB ")
-                    send(outPacket)
+
+                    if (arg2 == "drop" && chance())
+                        println("Dropping $indexA:$indexB ")
+                    else {
+                        println("Sending $indexA:$indexB ")
+                        send(outPacket)
+                    }
 
                     if (indexB == 127.toByte()) {
                         indexA++; indexB = 0
@@ -202,7 +210,6 @@ private fun sendSlide() {
 
             }catch (s: SocketTimeoutException) {
                 println("No ack received, sending again")
-                break
             }
         }
         println("End of list")
@@ -212,6 +219,12 @@ private fun sendSlide() {
     indexA = 0
     indexB = 0
 }
+
+private fun chance(): Boolean =
+        (1..100).random() == 1
+
+private fun ClosedRange<Int>.random() =
+        Random().nextInt(endInclusive - start) +  start
 
 private fun splitImg(bytes: ByteArray): Queue<ByteArray> {
     var index = 0
