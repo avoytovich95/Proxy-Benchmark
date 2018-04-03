@@ -6,21 +6,13 @@ import java.io.FileOutputStream
  */
 class ImageBuilder(val type: String) {
 
-    class Block(val aBlock: Byte, bBlock: Byte)
-
     private val list = ArrayList<ImageFrag>()
-    private val blocks = ArrayList<Block>()
     private lateinit var bytes: ByteArray
-
     var file = ""
 
     fun add(img: ImageFrag) {
         list.add(img)
-        blocks.add(Block(img.aBlock, img.bBlock))
     }
-
-    fun exists(aBlock: Byte, bBlock: Byte): Boolean =
-            blocks.contains(Block(aBlock, bBlock))
 
     fun build() {
         list.sort()
@@ -40,8 +32,6 @@ class ImageBuilder(val type: String) {
 }
 
 class ImageFrag(val aBlock: Byte, val bBlock: Byte, val bytes: ByteArray): Comparable<ImageFrag> {
-
-    fun isEnd(): Boolean = bytes.size < 512
 
     override fun compareTo(other: ImageFrag) = when {
         aBlock < other.aBlock -> -1

@@ -1,15 +1,10 @@
 import java.io.File
 import java.net.*
-import java.util.*
-import kotlin.concurrent.thread
 import javax.swing.JFrame
-import javax.swing.text.StyleConstants.setIcon
 import javax.swing.JLabel
 import java.awt.FlowLayout
 import javax.swing.ImageIcon
 import javax.imageio.ImageIO
-import java.awt.image.BufferedImage
-import java.io.IOException
 
 
 
@@ -54,10 +49,15 @@ fun main(args: Array<String>) {
     type = url!!.trim()
     type = url.substring(url.length - 4)
 
-    if (arg1 == "slide")
-        receiveSlide(url)
-    else if (arg1 == "stop")
-        connectStop(url)
+//    for (i in 1..30) {
+//        if (arg1 == "slide")
+//            receiveSlide(url)
+//        else if (arg1 == "stop")
+//            connectStop(url)
+//    }
+
+    if (arg1 == "slide") receiveSlide(url)
+    else if (arg1 == "stop") connectStop(url)
     displayImage()
 }
 
@@ -65,7 +65,6 @@ private fun connectStop(url: String) {
     val socket = DatagramSocket()
     val ip = if (arg0 == "ipv6") InetAddress.getByName(Data.address6)
     else InetAddress.getByName(Data.address4)
-    println(ip)
 
     var inBytes: ByteArray
     var outBytes: ByteArray
@@ -74,36 +73,33 @@ private fun connectStop(url: String) {
     var frag: ImageFrag
     val img = ImageBuilder(type)
 
+    var start: Long
+    var time: Long
+
     socket.run {
         outBytes = Data.RRQ(url)
         outPacket = DatagramPacket(outBytes, outBytes.size, ip, Data.port)
 
+        start = System.nanoTime()
         send(outPacket)
+        soTimeout = 5000
         while (true) {
             inBytes = ByteArray(512 + 4)
             inPacket = DatagramPacket(inBytes, inBytes.size)
 
-            soTimeout = 5000
             try {
                 receive(inPacket)
                 soTimeout = 500
                 inBytes = inPacket.data
                 if (Data.getOp(inBytes) == 3.toByte()) {
                     frag = Data.getDataFrag(inBytes)
-                    if (arg2 == "drop" && chance()) {
-                        Thread.sleep(500)
-                        throw SocketTimeoutException("Packet Dropped")
-                    }else {
-                        print("Received ${frag.aBlock}:${frag.bBlock}... ")
-                        outBytes = ByteArray(128)
-                        outBytes = Data.ACK(frag.aBlock, frag.bBlock)
-                        outPacket = DatagramPacket(outBytes, outBytes.size, ip, Data.port)
-                        img.add(frag)
-                        send(outPacket)
-                        println("Ack sent")
-                    }
-
-                    if (frag.isEnd()) break
+                    print("Received ${frag.aBlock}:${frag.bBlock}... ")
+                    outBytes = ByteArray(128)
+                    outBytes = Data.ACK(frag.aBlock, frag.bBlock)
+                    outPacket = DatagramPacket(outBytes, outBytes.size, ip, Data.port)
+                    img.add(frag)
+                    send(outPacket)
+                    println("Ack sent")
 
                 } else if (Data.getOp(inBytes) == 5.toByte()) {
                     throw Exception("Error Code: ")
@@ -121,6 +117,8 @@ private fun connectStop(url: String) {
                 return
             }
         }
+        time = System.nanoTime() - start
+        println(time)
         close()
     }
     println("Building file")
@@ -134,7 +132,6 @@ private fun connectStop(url: String) {
 private fun receiveSlide(url: String) {    val socket = DatagramSocket()
     val ip = if (arg0 == "ipv6") InetAddress.getByName(Data.address6)
     else InetAddress.getByName(Data.address4)
-    println(ip)
 
     var inBytes = ByteArray(512 + 4)
     var outBytes: ByteArray
@@ -143,11 +140,15 @@ private fun receiveSlide(url: String) {    val socket = DatagramSocket()
     var frag: ImageFrag
     val img = ImageBuilder(type)
 
+    var start: Long
+    var time: Long
+
     socket.run {
         outBytes = Data.RRQ(url)
         outPacket = DatagramPacket(outBytes, outBytes.size, ip, Data.port)
 
         try {
+            start = System.nanoTime()
             send(outPacket)
 
             var latest = ByteArray(2)
@@ -166,9 +167,6 @@ private fun receiveSlide(url: String) {    val socket = DatagramSocket()
 
                         if (Data.getOp(inBytes) == 5.toByte()) throw Exception("Error Code: ")
 
-//                        if (arg2 == "drop" && chance()) {
-//                            throw SocketTimeoutException("Packet Dropped")
-//                        } else
                         if (Data.checkBlock(frag.aBlock, frag.bBlock, expected)) {
                             println("Received ${frag.aBlock}:${frag.bBlock}")
                             img.add(frag)
@@ -178,7 +176,7 @@ private fun receiveSlide(url: String) {    val socket = DatagramSocket()
                             } else expected[1]++
                         }
                         if (inBytes[0] == 1.toByte()) break
-                    }catch (s: SocketTimeoutException) { println(s) }
+                    }catch (s: SocketTimeoutException) { /*println(s)*/ }
 
                 }
                 outBytes = ByteArray(128)
@@ -198,6 +196,8 @@ private fun receiveSlide(url: String) {    val socket = DatagramSocket()
             close()
             return
         }
+        time = System.nanoTime() - start
+        println(time)
         close()
     }
     println("Building file")
@@ -207,12 +207,6 @@ private fun receiveSlide(url: String) {    val socket = DatagramSocket()
     println("File saved")
     file = img.file
 }
-
-private fun chance(): Boolean =
-    (1..100).random() == 1
-
-private fun ClosedRange<Int>.random() =
-        Random().nextInt(endInclusive - start) +  start
 
 fun displayImage() {
     val img = ImageIO.read(File(file))

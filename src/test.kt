@@ -8,6 +8,7 @@ import java.util.*
 fun main(args: Array<String>) {
     val url = URL("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/16777216colors.png/220px-16777216colors.png   ")
     val file = url.file
+    println(file)
     println(file.substring(file.lastIndexOf('/') + 1))
     println(file.substring(file.length - 3))
     println(file.substring(file.lastIndexOf('/') + 1, file.length - 4))

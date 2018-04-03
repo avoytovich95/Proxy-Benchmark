@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Networking</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" class="brand-logo">
+        <i class="material-icons">network_wifi</i>CSC445
+      </a>
+      <ul class="right hide-on-med-and-down">
+      </ul>
+    </div>
+  </nav>
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <h1 class="header center cyan-text text-lighten-2">Testing Networks</h1>
+        <div class="row center">
+          <h5 class="header col s12 light">
+            A series of tests designed to test differenct aspects of a network.
+          </h5>
+        </div>
+
+      </div>
+    </div>
+    <div class="parallax"><img src="background1.jpg" alt="Unsplashed background img 1"></div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center blue-text text-darken-2"><i class="material-icons">repeat</i></h2>
+            <h5 class="center">Round Trip Time</h5>
+
+            <p class="light">
+                Measure round-trip latency as a function of message size, by sending and receiving 
+                (echoing) messages of size 1, 64, and 1024 bytes, using both TCP and UDP. Measure RTTs.
+            </p>
+          </div>
+          <div class="center">
+            <a href="RTT/data.html" class="waves-effect waves-light btn blue darken-2">Data</a>
+            <a href="RTT/RTT.xlsx" class="waves-effect waves-light btn blue darken-2">
+              <i class="material-icons">file_download</i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center red-text text-darken-2"><i class="material-icons">arrow_forward</i></h2>
+            <h5 class="center">Throughput</h5>
+
+            <p class="light">
+                Measure throughput by sending TCP messages of size 1K, 16K, 64K, 256K, and 1M bytes in 
+                each direction. Measure transfer rates.
+            </p>
+          </div>
+          <div class="center">
+            <a href="Throughput/data.html" class="waves-effect waves-light btn red darken-2">Data</a>
+            <a href="Throughput/throughput.xlsx" class="waves-effect waves-light btn red darken-2">
+              <i class="material-icons">file_download</i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center green-text text-darking-2"><i class="material-icons">call_split</i></h2>
+            <h5 class="center">Data in Pieces</h5>
+
+            <p class="light">
+                Measure the interaction between message size and number of messages using TCP and UDP 
+                using different numbers of messages: 256 x 4KByte messages, 512 x 2KByte messages, 
+                and 1024 x 1KByte messages.
+            </p>
+          </div>
+          <div class="center">
+            <a href="Interaction/data.html" class="waves-effect waves-light btn green darken-2">Data</a>
+            <a href="Interaction/interaction.xlsx" class="waves-effect waves-light btn green darken-2">
+              <i class="material-icons">file_download</i>
+            </a>
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+  </div>
+
+  <div class="cyan darken-2">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text">Project Description</h5>
+          <p class="grey-text text-lighten-4">
+            This project was built utilizing the Kotlin programming language, and was ran accross platforms
+            and networks. It utilizes the Java IO and Network library to connect and transfer data between
+            two machines. To measure the time, the program uses System.nanoTime to record transfer times.  
+          </p>
+        </div>
+      </div>
+   </div>
+  </div>
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <h1 class="header center blue-grey-text text-lighten-3">Simulating Proxies</h1>
+        <div class="row center">
+          <h5 class="header col s12 light">
+            A proxy server to test the transfer of a file under different conditions.
+          </h5>
+        </div>
+
+      </div>
+    </div>
+    <div class="parallax"><img src="background3.jpg" alt="Unsplashed background img 1"></div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <div class="row">
+
+        <div class="col s12 m6">
+          <div class="icon-block">
+            <h2 class="center blue-text text-darken-2"><i class="material-icons">compare_arrows</i></h2>
+            <h5 class="center">Stop and Wait</h5>
+
+            <p class="light">
+                Measure of the transer using the stop-and-wait protocol. Options for ipv4 and ipv6
+                addresses available, as well as simulated drops.
+            </p>
+          </div>
+          <div class="center">
+            <a href="project2/stop.html" class="waves-effect waves-light btn blue darken-2">Data</a>
+            <a href="project2/Stop/throughput.xlsx" class="waves-effect waves-light btn blue darken-2">
+              <i class="material-icons">file_download</i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col s12 m6">
+          <div class="icon-block">
+            <h2 class="center green-text text-darken-2"><i class="material-icons">sort</i></h2>
+            <h5 class="center">Sliding Window</h5>
+
+            <p class="light">
+              Measure of the transfer using the sliding-window protocol. Options for the ipv4 and ipv6
+              addresses available, as well as simulated drops.
+            </p>
+          </div>
+          <div class="center">
+            <a href="project2/slide.html" class="waves-effect waves-light btn green darken-2">Data</a>
+            <a href="project2/Slide/throughput.xlsx" class="waves-effect waves-light btn green darken-2">
+              <i class="material-icons">file_download</i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="orange darken-2">
+  </div>
+
+  <footer class="page-footer blue-grey darken-2">
+    <div class="footer-copyright">
+      <div class="container">
+
+        <div class="row">
+          <div class="col l6 s12">
+            <h5 class="white-text">Project Description</h5>
+            <p class="grey-text text-lighten-4">
+              This project is a proxy server that is meant to download any available file from a url.
+              It allows for the options of choosing the conditions of the download. The client and 
+              server programs allow for command line function to select whether you want to use the 
+              stop-and-wait protocol or the sliding window protocol. It also allows for us of ipv4
+              or ipv6 addresses, and the simulation of dropped packets.
+            </p>
+          </div>
+        </div>
+
+      Made by <a class="brown-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+      </div>
+    </div>
+  </footer>
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  </body>
+</html>

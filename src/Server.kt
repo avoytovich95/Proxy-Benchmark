@@ -41,13 +41,16 @@ fun main(args: Array<String>) {
         }
     }
 
-    if (arg1 == "stop") {
-        println("Running stop and wait\n")
-        connectStop()
-    } else if (arg1 == "slide") {
-        println("Running sliding window")
-        sendSlide()
-    }
+//    for (i in 1..30) {
+//        if (arg1 == "stop") {
+//            connectStop()
+//        } else if (arg1 == "slide") {
+//            sendSlide()
+//        }
+//    }
+
+    if (arg1 == "stop") connectStop()
+    else if (arg1 == "slide") sendSlide()
 }
 
 private fun connectStop() {
@@ -98,7 +101,9 @@ private fun connectStop() {
 
                 receive(inPacket)
 
-                if (Data.checkBlock(indexA, indexB, Data.getBlock(inPacket.data))) {
+                if (Data.checkBlock(indexA, indexB, Data.getBlock(inPacket.data))
+                        && Data.getOp(inPacket.data) == 4.toByte()) {
+
                     print("Ack received")
 
                     if (indexB == 127.toByte()) {
